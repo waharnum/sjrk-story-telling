@@ -50,10 +50,13 @@
     fluid.defaults("sjrk.dynamicViewComponentManager.containerMarkupGenerator", {
         gradeNames: ["fluid.component"],
         // Match this to the managedViewComponents selector
-        containerGlobalClass: "sjrk-dynamic-view-component",
-        // Should use %guid in this
-        containerIndividualClassTemplate: "sjrk-dynamic-view-component-%guid",
-        containerMarkupTemplate: "<div class='%globalClass %individualClass'></div>",
+        containerGlobalClass: "fluidc-dynamicViewComponent fluid-dynamicViewComponent",
+        // Should use %guid in this fluid.stringTemplate to
+        // generate a unique class for the container
+        containerIndividualClassTemplate: "fluid-dynamicViewComponent-%guid",
+        // Use %containerGlobalClass and %containerIndividualClass to access
+        // those values in this fluid.stringTemplate
+        containerMarkupTemplate: "<div class='%containerGlobalClass %containerIndividualClass'></div>",
         invokers: {
             getMarkup: {
                 funcName: "sjrk.dynamicViewComponentManager.containerMarkupGenerator.getMarkup",
@@ -75,8 +78,8 @@
         var containerIndividualClass = fluid.stringTemplate(containerIndividualClassTemplate, {guid: guid});
 
         var markup = fluid.stringTemplate(containerMarkupTemplate, {
-            globalClass: containerGlobalClass,
-            individualClass: containerIndividualClass
+            containerGlobalClass: containerGlobalClass,
+            containerIndividualClass: containerIndividualClass
         });
 
         return markup;
@@ -85,8 +88,10 @@
     // used to create and keep track of dynamic view components
     fluid.defaults("sjrk.dynamicViewComponentManager", {
         gradeNames: ["fluid.viewComponent"],
+        containerGlobalClass: "sjrkc-dynamicViewComponent sjrk-dynamicViewComponent",
+        containerIndividualClassTemplate: "sjrk-dynamicViewComponent-%guid",
         selectors: {
-            managedViewComponents: ".sjrk-dynamic-view-component"
+            managedViewComponents: ".sjrkc-dynamicViewComponent"
         },
         events: {
             // single-argument event - requires a specified "type" for the
@@ -117,6 +122,10 @@
             },
             containerMarkupGenerator: {
                 type: "sjrk.dynamicViewComponentManager.containerMarkupGenerator",
+                options: {
+                    containerGlobalClass: "{dynamicViewComponentManager}.options.containerGlobalClass",
+                    containerIndividualClassTemplate: "{dynamicViewComponentManager}.options.containerIndividualClassTemplate"
+                }
             }
         },
         dynamicComponents: {
@@ -187,11 +196,11 @@
 
         var guid = fluid.allocateGuid();
 
-        var containerMarkup = that.containerMarkupGenerator.getMarkup(guid);
-
-        var containerIndividualClass = fluid.stringTemplate(that.containerMarkupGenerator.options.containerIndividualClassTemplate, {guid: guid});
+        var containerIndividualClass = fluid.stringTemplate(that.options.containerIndividualClassTemplate, {guid: guid});
 
         var containerSelector = "." + containerIndividualClass;
+
+        var containerMarkup = that.containerMarkupGenerator.getMarkup(guid);
 
         that.container.append(containerMarkup);
 
