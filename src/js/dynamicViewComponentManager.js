@@ -69,7 +69,8 @@
         dynamicViewComponentManagerOptions: {
             containerGlobalClass: "sjrk-dynamic-view-component",
             // Can use %guid
-            containerIndividualClassTemplate: "sjrk-dynamic-view-component-%guid"
+            containerIndividualClassTemplate: "sjrk-dynamic-view-component-%guid",
+            containerMarkupTemplate: "<div class='%globalClass %indivualClass'></div>"
         },
         listeners: {
             "viewComponentContainerRequested.addComponentContainer": {
@@ -146,7 +147,7 @@
     sjrk.dynamicViewComponentManager.addComponentContainer = function (that, completionEvent, type, additionalConfiguration) {
         var guid = fluid.allocateGuid();
         var containerIndividualClass = fluid.stringTemplate(that.options.dynamicViewComponentManagerOptions.containerIndividualClassTemplate, {guid: guid});
-        var containerMarkup = sjrk.dynamicViewComponentManager.getContainerMarkup(that.options.dynamicViewComponentManagerOptions.containerGlobalClass, containerIndividualClass);
+        var containerMarkup = sjrk.dynamicViewComponentManager.getContainerMarkup(that.options.dynamicViewComponentManagerOptions.containerGlobalClass, containerIndividualClass, that.options.dynamicViewComponentManagerOptions.containerMarkupTemplate);
         var containerSelector = "." + containerIndividualClass;
 
         that.container.append(containerMarkup);
@@ -158,15 +159,14 @@
      * components are held.
      * - "containerGlobalClass": a CSS selector which all of the view components will share
      * - "containerIndividualClass": a CSS selector unique to this particular view component
+     * - "containerMarkupTemplate": a fluid.stringTemplate-style string using
+     * containerGlobalClass and containerIndividualClass
      */
-    sjrk.dynamicViewComponentManager.getContainerMarkup = function (containerGlobalClass, containerIndividualClass) {
-
-        var containerMarkup = fluid.stringTemplate("<div class='%globalClass %indivualClass'></div>", {
+    sjrk.dynamicViewComponentManager.getContainerMarkup = function (containerGlobalClass, containerIndividualClass, containerMarkupTemplate) {
+        return fluid.stringTemplate(containerMarkupTemplate, {
             globalClass: containerGlobalClass,
             indivualClass: containerIndividualClass
         });
-
-        return containerMarkup;
     };
 
 })(jQuery, fluid);
