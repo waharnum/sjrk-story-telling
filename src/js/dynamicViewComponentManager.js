@@ -92,7 +92,7 @@
             // single-argument event - requires a specified "type" for the
             // viewComponent
             viewComponentContainerRequested: null,
-            viewComponentContainerAppended: null,
+            viewComponentContainerReady: null,
             viewComponentCreated: null,
             viewComponentDestroyed: null,
             viewComponentContainerRemoved: null,
@@ -123,7 +123,7 @@
             managedViewComponents: {
                 type: "{arguments}.3",
                 container: "{arguments}.0",
-                createOnEvent: "viewComponentContainerAppended",
+                createOnEvent: "viewComponentContainerReady",
                 options: {
                     managedViewComponentRequiredConfig: {
                         containerSelector: "{arguments}.0",
@@ -150,7 +150,7 @@
         listeners: {
             "viewComponentContainerRequested.addComponentContainer": {
                 "funcName": "sjrk.dynamicViewComponentManager.addComponentContainer",
-                "args": ["{that}", "{that}.events.viewComponentContainerAppended", "{arguments}.0", "{arguments}.1"]
+                "args": ["{that}", "{that}.events.viewComponentContainerReady", "{arguments}.0", "{arguments}.1"]
             },
             "viewComponentDestroyed.removeComponentContainer": {
                 "funcName": "sjrk.dynamicViewComponentManager.removeComponentContainer",
@@ -164,7 +164,8 @@
      * - "that": the dynamicViewComponentManager itself
      * - "componentContainerSelector": the CSS selector of the DOM container
      * - "componentContainerIndividualClass": the CSS selector of the view component
-     * - "completionEvent": the event to be fired upon successful completion
+     * - "completionEvent": the event to be fired upon successful completion,
+     * will receive componentContainerIndividualClass as a single arg
      */
     sjrk.dynamicViewComponentManager.removeComponentContainer = function (that, componentContainerSelector, componentContainerIndividualClass, completionEvent) {
         var removedComponentContainer = that.container.find(componentContainerSelector);

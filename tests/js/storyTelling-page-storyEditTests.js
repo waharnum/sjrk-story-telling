@@ -262,7 +262,7 @@ https://raw.githubusercontent.com/fluid-project/sjrk-story-telling/master/LICENS
                     "element": "{storyEdit}.storyEditor.dom.storyAddTextBlock"
                 },
                 {
-                    "event": "{storyEdit}.storyEditor.blockManager.events.viewComponentRegisteredWithManager",
+                    "event": "{storyEdit}.storyEditor.blockManager.componentRegistry.events.viewComponentRegisteredWithManager",
                     listener: "sjrk.storyTelling.testUtils.verifyBlockAdded",
                     args: ["{storyEdit}.storyEditor.blockManager", "{arguments}.0", "sjrk.storyTelling.blockUi.editor.textBlockEditor"]
                 },
@@ -281,7 +281,7 @@ https://raw.githubusercontent.com/fluid-project/sjrk-story-telling/master/LICENS
                     "element": "{storyEdit}.storyEditor.dom.storyAddImageBlock"
                 },
                 {
-                    "event": "{storyEdit}.storyEditor.blockManager.events.viewComponentRegisteredWithManager",
+                    "event": "{storyEdit}.storyEditor.blockManager.componentRegistry.events.viewComponentRegisteredWithManager",
                     listener: "sjrk.storyTelling.testUtils.verifyBlockAdded",
                     args: ["{storyEdit}.storyEditor.blockManager", "{arguments}.0", "sjrk.storyTelling.blockUi.editor.imageBlockEditor"]
                 },
@@ -300,7 +300,7 @@ https://raw.githubusercontent.com/fluid-project/sjrk-story-telling/master/LICENS
                     "element": "{storyEdit}.storyEditor.dom.storyAddTextBlock"
                 },
                 {
-                    "event": "{storyEdit}.storyEditor.blockManager.events.viewComponentRegisteredWithManager",
+                    "event": "{storyEdit}.storyEditor.blockManager.componentRegistry.events.viewComponentRegisteredWithManager",
                     listener: "sjrk.storyTelling.testUtils.verifyBlockAdded",
                     args: ["{storyEdit}.storyEditor.blockManager", "{arguments}.0", "sjrk.storyTelling.blockUi.editor.textBlockEditor"]
                 },

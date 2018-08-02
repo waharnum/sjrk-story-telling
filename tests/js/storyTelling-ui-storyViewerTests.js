@@ -90,7 +90,7 @@ https://raw.githubusercontent.com/fluid-project/sjrk-story-telling/master/LICENS
                 },
                 // verify blocks have been rendered in the correct order
                 {
-                    "event": "{storyViewerTest storyViewer blockManager}.events.viewComponentRegisteredWithManager",
+                    "event": "{storyViewerTest storyViewer blockManager componentRegistry}.events.viewComponentRegisteredWithManager",
                     listener: "sjrk.storyTelling.testUtils.verifyBlockAdded",
                     args: ["{storyViewer}.blockManager", "{arguments}.0", "sjrk.storyTelling.blockUi.textBlockViewer"]
                 },

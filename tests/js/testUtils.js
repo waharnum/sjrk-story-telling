@@ -76,15 +76,14 @@ https://raw.githubusercontent.com/fluid-project/sjrk-story-telling/master/LICENS
     };
 
     sjrk.storyTelling.testUtils.checkFirstBlockCheckbox = function (blockManager) {
-        var managedComponentRegistryAsArray = fluid.hashToArray(blockManager.managedViewComponentRegistry, "managedComponentKey");
+        var managedComponentRegistryAsArray = fluid.hashToArray(blockManager.componentRegistry.registeredComponents, "managedComponentKey");
         var checkBox = managedComponentRegistryAsArray[0].locate("selectedCheckbox");
 
         checkBox.prop("checked", true);
     };
 
     sjrk.storyTelling.testUtils.verifyBlockAdded = function (blockManager, addedBlockKey, expectedGrade) {
-
-        var blockComponent = blockManager.managedViewComponentRegistry[addedBlockKey];
+        var blockComponent = blockManager.componentRegistry.registeredComponents[addedBlockKey];
 
         // Verify the block is added to the manager's registry
         jqUnit.assertNotNull("New block added to manager's registry", blockComponent);
@@ -98,7 +97,7 @@ https://raw.githubusercontent.com/fluid-project/sjrk-story-telling/master/LICENS
     };
 
     sjrk.storyTelling.testUtils.verifyBlocksRemoved = function (blockManager, removedBlockKeys, expectedNumberOfBlocks) {
-        var managedComponentRegistryAsArray = fluid.hashToArray(blockManager.managedViewComponentRegistry, "managedComponentKey");
+        var managedComponentRegistryAsArray = fluid.hashToArray(blockManager.componentRegistry.registeredComponents, "managedComponentKey");
         jqUnit.assertEquals("Number of remaining blocks is expected #: " + expectedNumberOfBlocks, expectedNumberOfBlocks, managedComponentRegistryAsArray.length);
     };
 

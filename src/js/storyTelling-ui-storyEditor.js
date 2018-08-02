@@ -99,7 +99,7 @@ https://raw.githubusercontent.com/fluid-project/sjrk-story-telling/master/LICENS
             },
             "onRemoveBlocksRequested.removeSelectedBlocks": {
                 funcName: "sjrk.storyTelling.ui.storyEditor.removeSelectedBlocks",
-                args: ["{that}", "{that}.blockManager.managedViewComponentRegistry"]
+                args: ["{that}", "{that}.blockManager.componentRegistry.registeredComponents"]
             }
         },
         components: {
