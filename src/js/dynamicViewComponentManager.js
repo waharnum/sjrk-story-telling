@@ -7,7 +7,7 @@
     fluid.defaults("sjrk.dynamicViewComponentManager.componentRegistry", {
         gradeNames: ["fluid.component"],
         members: {
-            registry: {
+            registeredComponents: {
                 // key: component individual class
                 // value: direct reference to the component
             }
@@ -100,7 +100,7 @@
     sjrk.dynamicViewComponentManager.registerManagedViewComponent = function (componentRegistry, managedComponent, completionEvent) {
         var componentContainerIndividualClass = managedComponent.options.managedViewComponentRequiredConfig.containerIndividualClass;
 
-        componentRegistry.registry[componentContainerIndividualClass] = managedComponent;
+        componentRegistry.registeredComponents[componentContainerIndividualClass] = managedComponent;
 
         completionEvent.fire(componentContainerIndividualClass);
     };
@@ -113,7 +113,7 @@
      */
     sjrk.dynamicViewComponentManager.deregisterManagedViewComponent = function (componentRegistry, managedComponentIndividualClass, completionEvent) {
 
-        fluid.remove_if(componentRegistry.registry, function (component, key) {
+        fluid.remove_if(componentRegistry.registeredComponents, function (component, key) {
             return key === managedComponentIndividualClass;
         });
 
@@ -160,12 +160,10 @@
      * - "containerIndividualClass": a CSS selector unique to this particular view component
      */
     sjrk.dynamicViewComponentManager.getContainerMarkup = function (containerGlobalClass, containerIndividualClass) {
-        var guid = fluid.allocateGuid();
 
         var containerMarkup = fluid.stringTemplate("<div class='%globalClass %indivualClass'></div>", {
             globalClass: containerGlobalClass,
-            indivualClass: containerIndividualClass,
-            guid: guid
+            indivualClass: containerIndividualClass
         });
 
         return containerMarkup;
