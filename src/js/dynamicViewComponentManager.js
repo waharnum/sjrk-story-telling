@@ -18,6 +18,70 @@
         }
     });
 
+    /* Registers a new view component with the dynamicViewComponentManager and
+     * fires a given event upon successful completion
+     * - "componentRegistry": the componentRegistry subcomponent
+     * - "managedComponent": the new view component to register
+     * - "completionEvent": the event to be fired upon successful completion
+     */
+    sjrk.dynamicViewComponentManager.componentRegistry.registerManagedViewComponent = function (componentRegistry, managedComponent, completionEvent) {
+        var componentContainerIndividualClass = managedComponent.options.managedViewComponentRequiredConfig.containerIndividualClass;
+
+        componentRegistry.registeredComponents[componentContainerIndividualClass] = managedComponent;
+
+        completionEvent.fire(componentContainerIndividualClass);
+    };
+
+    /* De-registers a view component, specified by its CSS control selector, from the
+     * dynamicViewComponentManager's managed view component registry
+     * - "componentRegistry": the componentRegistry subcomponent
+     * - "managedComponentIndividualClass": the CSS control class of the view component
+     * - "completionEvent": the event to be fired upon successful completion
+     */
+    sjrk.dynamicViewComponentManager.componentRegistry.deregisterManagedViewComponent = function (componentRegistry, managedComponentIndividualClass, completionEvent) {
+
+        fluid.remove_if(componentRegistry.registeredComponents, function (component, key) {
+            return key === managedComponentIndividualClass;
+        });
+
+        completionEvent.fire();
+    };
+
+    fluid.defaults("sjrk.dynamicViewComponentManager.containerMarkupGenerator", {
+        gradeNames: ["fluid.component"],
+        // Match this to the managedViewComponents selector
+        containerGlobalClass: "sjrk-dynamic-view-component",
+        // Should use %guid in this
+        containerIndividualClassTemplate: "sjrk-dynamic-view-component-%guid",
+        containerMarkupTemplate: "<div class='%globalClass %individualClass'></div>",
+        invokers: {
+            getMarkup: {
+                funcName: "sjrk.dynamicViewComponentManager.containerMarkupGenerator.getMarkup",
+                args: ["{that}.options.containerGlobalClass", "{that}.options.containerIndividualClassTemplate", "{that}.options.containerMarkupTemplate", "{arguments}.0"]
+            }
+        }
+    });
+
+    /* Generates the HTML markup for the DOM element in which new view
+     * components are held.
+     * - "containerGlobalClass": a CSS selector which all of the view components will share
+     * - "containerIndividualClassTemplate": a CSS selector unique to this particular view component
+     * - "containerMarkupTemplate": a fluid.stringTemplate-style string using
+     * containerGlobalClass and containerIndividualClass
+     * - "guid": the guid associated with the view component
+     */
+    sjrk.dynamicViewComponentManager.containerMarkupGenerator.getMarkup = function (containerGlobalClass, containerIndividualClassTemplate, containerMarkupTemplate, guid) {
+
+        var containerIndividualClass = fluid.stringTemplate(containerIndividualClassTemplate, {guid: guid});
+
+        var markup = fluid.stringTemplate(containerMarkupTemplate, {
+            globalClass: containerGlobalClass,
+            individualClass: containerIndividualClass
+        });
+
+        return markup;
+    };
+
     // used to create and keep track of dynamic view components
     fluid.defaults("sjrk.dynamicViewComponentManager", {
         gradeNames: ["fluid.viewComponent"],
@@ -35,7 +99,24 @@
         },
         components: {
             componentRegistry: {
-                type: "sjrk.dynamicViewComponentManager.componentRegistry"
+                type: "sjrk.dynamicViewComponentManager.componentRegistry",
+                options: {
+                    listeners: {
+                        "{dynamicViewComponentManager}.events.viewComponentCreated": {
+                            func: "sjrk.dynamicViewComponentManager.componentRegistry.registerManagedViewComponent",
+                            args: ["{that}", "{arguments}.0", "{dynamicViewComponentManager}.componentRegistry.events.viewComponentRegisteredWithManager"],
+                            namespace: "registerManagedViewComponent"
+                        },
+                        "{dynamicViewComponentManager}.events.viewComponentContainerRemoved": {
+                            func: "sjrk.dynamicViewComponentManager.componentRegistry.deregisterManagedViewComponent",
+                            args: ["{that}", "{arguments}.0", "{dynamicViewComponentManager}.componentRegistry.events.viewComponentDeregisteredWithManager"],
+                            namespace: "deregisterManagedViewComponent"
+                        }
+                    }
+                }
+            },
+            containerMarkupGenerator: {
+                type: "sjrk.dynamicViewComponentManager.containerMarkupGenerator",
             }
         },
         dynamicComponents: {
@@ -66,60 +147,17 @@
                 }
             }
         },
-        dynamicViewComponentManagerOptions: {
-            containerGlobalClass: "sjrk-dynamic-view-component",
-            // Can use %guid
-            containerIndividualClassTemplate: "sjrk-dynamic-view-component-%guid",
-            containerMarkupTemplate: "<div class='%globalClass %indivualClass'></div>"
-        },
         listeners: {
             "viewComponentContainerRequested.addComponentContainer": {
                 "funcName": "sjrk.dynamicViewComponentManager.addComponentContainer",
                 "args": ["{that}", "{that}.events.viewComponentContainerAppended", "{arguments}.0", "{arguments}.1"]
             },
-            "viewComponentCreated.registerManagedViewComponent": {
-                func: "sjrk.dynamicViewComponentManager.registerManagedViewComponent",
-                args: ["{that}.componentRegistry", "{arguments}.0", "{dynamicViewComponentManager}.componentRegistry.events.viewComponentRegisteredWithManager"]
-            },
             "viewComponentDestroyed.removeComponentContainer": {
                 "funcName": "sjrk.dynamicViewComponentManager.removeComponentContainer",
                 "args": ["{that}", "{arguments}.0", "{arguments}.1", "{that}.events.viewComponentContainerRemoved"]
-            },
-            "viewComponentContainerRemoved.deregisterManagedViewComponent": {
-                func: "sjrk.dynamicViewComponentManager.deregisterManagedViewComponent",
-                args: ["{that}.componentRegistry", "{arguments}.0", "{dynamicViewComponentManager}.componentRegistry.events.viewComponentDeregisteredWithManager"]
             }
         }
     });
-
-    /* Registers a new view component with the dynamicViewComponentManager and
-     * fires a given event upon successful completion
-     * - "componentRegistry": the componentRegistry subcomponent
-     * - "managedComponent": the new view component to register
-     * - "completionEvent": the event to be fired upon successful completion
-     */
-    sjrk.dynamicViewComponentManager.registerManagedViewComponent = function (componentRegistry, managedComponent, completionEvent) {
-        var componentContainerIndividualClass = managedComponent.options.managedViewComponentRequiredConfig.containerIndividualClass;
-
-        componentRegistry.registeredComponents[componentContainerIndividualClass] = managedComponent;
-
-        completionEvent.fire(componentContainerIndividualClass);
-    };
-
-    /* De-registers a view component, specified by its CSS control selector, from the
-     * dynamicViewComponentManager's managed view component registry
-     * - "componentRegistry": the componentRegistry subcomponent
-     * - "managedComponentIndividualClass": the CSS control class of the view component
-     * - "completionEvent": the event to be fired upon successful completion
-     */
-    sjrk.dynamicViewComponentManager.deregisterManagedViewComponent = function (componentRegistry, managedComponentIndividualClass, completionEvent) {
-
-        fluid.remove_if(componentRegistry.registeredComponents, function (component, key) {
-            return key === managedComponentIndividualClass;
-        });
-
-        completionEvent.fire();
-    };
 
     /* Removes the DOM element which contains the view component specified by
      * the CSS control selector
@@ -145,28 +183,18 @@
      *    on the newly-created view component
      */
     sjrk.dynamicViewComponentManager.addComponentContainer = function (that, completionEvent, type, additionalConfiguration) {
+
         var guid = fluid.allocateGuid();
-        var containerIndividualClass = fluid.stringTemplate(that.options.dynamicViewComponentManagerOptions.containerIndividualClassTemplate, {guid: guid});
-        var containerMarkup = sjrk.dynamicViewComponentManager.getContainerMarkup(that.options.dynamicViewComponentManagerOptions.containerGlobalClass, containerIndividualClass, that.options.dynamicViewComponentManagerOptions.containerMarkupTemplate);
+
+        var containerMarkup = that.containerMarkupGenerator.getMarkup(guid);
+
+        var containerIndividualClass = fluid.stringTemplate(that.containerMarkupGenerator.options.containerIndividualClassTemplate, {guid: guid});
+
         var containerSelector = "." + containerIndividualClass;
 
         that.container.append(containerMarkup);
 
         completionEvent.fire(containerSelector, containerIndividualClass, guid, type, additionalConfiguration);
-    };
-
-    /* Generates the HTML markup for the DOM element in which new view
-     * components are held.
-     * - "containerGlobalClass": a CSS selector which all of the view components will share
-     * - "containerIndividualClass": a CSS selector unique to this particular view component
-     * - "containerMarkupTemplate": a fluid.stringTemplate-style string using
-     * containerGlobalClass and containerIndividualClass
-     */
-    sjrk.dynamicViewComponentManager.getContainerMarkup = function (containerGlobalClass, containerIndividualClass, containerMarkupTemplate) {
-        return fluid.stringTemplate(containerMarkupTemplate, {
-            globalClass: containerGlobalClass,
-            indivualClass: containerIndividualClass
-        });
     };
 
 })(jQuery, fluid);
