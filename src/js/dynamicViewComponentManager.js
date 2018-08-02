@@ -4,6 +4,16 @@
 
     "use strict";
 
+    fluid.defaults("sjrk.dynamicViewComponentManager.managedViewComponentRegistry", {
+        gradeNames: ["fluid.component"],
+        members: {
+            registry: {
+                // key: component individual class
+                // value: direct reference to the component
+            }
+        }
+    });
+
     // used to create and keep track of dynamic view components
     fluid.defaults("sjrk.dynamicViewComponentManager", {
         gradeNames: ["fluid.viewComponent"],
@@ -23,15 +33,7 @@
         },
         components: {
             managedViewComponentRegistry: {
-                type: "fluid.component",
-                options: {
-                    members: {
-                        registry: {
-                            // key: component individual class
-                            // value: direct reference to the component
-                        }
-                    }
-                }
+                type: "sjrk.dynamicViewComponentManager.managedViewComponentRegistry"        
             }
         },
         dynamicComponents: {
