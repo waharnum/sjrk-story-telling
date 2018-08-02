@@ -52,7 +52,7 @@
                     args: ["sjrk.testDynamicViewComponent"]
                 }, {
                     listener: "sjrk.dynamicViewComponentManagerTester.verifyManagedViewComponentType",
-                    event: "{dynamicViewComponentManager}.events.viewComponentRegisteredWithManager",
+                    event: "{dynamicViewComponentManager}.componentRegistry.events.viewComponentRegisteredWithManager",
                     args: ["{dynamicViewComponentManager}", "{arguments}.0", "sjrk.testDynamicViewComponent"]
                 }, {
                     funcName: "sjrk.dynamicViewComponentManagerTester.verifyManagedViewComponentNumbers",
@@ -63,7 +63,7 @@
                     args: ["sjrk.testDynamicViewComponent2"]
                 }, {
                     listener: "sjrk.dynamicViewComponentManagerTester.verifyManagedViewComponentType",
-                    event: "{dynamicViewComponentManager}.events.viewComponentRegisteredWithManager",
+                    event: "{dynamicViewComponentManager}.componentRegistry.events.viewComponentRegisteredWithManager",
                     args: ["{dynamicViewComponentManager}", "{arguments}.0", "sjrk.testDynamicViewComponent2"]
                 }, {
                     funcName: "sjrk.dynamicViewComponentManagerTester.verifyManagedViewComponentNumbers",
@@ -73,7 +73,7 @@
                     args: ["{dynamicViewComponentManager}"]
                 }, {
                     listener: "sjrk.dynamicViewComponentManagerTester.verifyManagedViewComponentNumbers",
-                    event: "{dynamicViewComponentManager}.events.viewComponentDeregisteredWithManager",
+                    event: "{dynamicViewComponentManager}.componentRegistry.events.viewComponentDeregisteredWithManager",
                     args: ["{dynamicViewComponentManager}", 1]
                 }]
             }]
@@ -85,14 +85,14 @@
     };
 
     sjrk.dynamicViewComponentManagerTester.verifyManagedViewComponentType = function (that, componentContainerIndividualClass, expectedType) {
-        var actualType = that.managedViewComponentRegistry.registry[componentContainerIndividualClass].options.managedViewComponentRequiredConfig.type;
+        var actualType = that.componentRegistry.registry[componentContainerIndividualClass].options.managedViewComponentRequiredConfig.type;
         jqUnit.assertEquals("managedViewComponent element has the expected type of " + expectedType, expectedType, actualType);
     };
 
     sjrk.dynamicViewComponentManagerTester.verifyManagedViewComponentNumbers = function (that, expectedNumber) {
-        var registerAsArray = fluid.hashToArray(that.managedViewComponentRegistry.registry, "componentContainerIndividualClass");
+        var registerAsArray = fluid.hashToArray(that.componentRegistry.registry, "componentContainerIndividualClass");
 
-        jqUnit.assertEquals("managedViewComponentRegistry.registry length is " + expectedNumber, expectedNumber, registerAsArray.length);
+        jqUnit.assertEquals("componentRegistry.registry length is " + expectedNumber, expectedNumber, registerAsArray.length);
 
         var managedViewComponents = that.locate("managedViewComponents");
 
@@ -101,7 +101,7 @@
 
     // Destroy the first managed component
     sjrk.dynamicViewComponentManagerTester.destroyFirstManagedComponent = function (that) {
-        var managedComponentRegistryAsArray = fluid.hashToArray(that.managedViewComponentRegistry.registry, "managedComponentKey");
+        var managedComponentRegistryAsArray = fluid.hashToArray(that.componentRegistry.registry, "managedComponentKey");
 
         managedComponentRegistryAsArray[0].destroy();
     };
