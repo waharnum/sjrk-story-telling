@@ -52,7 +52,7 @@
                     args: ["sjrk.testDynamicViewComponent"]
                 }, {
                     listener: "sjrk.dynamicViewComponentManagerTester.verifyManagedViewComponentType",
-                    event: "{dynamicViewComponentManager}.componentRegistry.events.viewComponentRegisteredWithManager",
+                    event: "{dynamicViewComponentManager}.componentRegistry.events.componentRegisteredWithManager",
                     args: ["{dynamicViewComponentManager}", "{arguments}.0", "sjrk.testDynamicViewComponent"]
                 }, {
                     funcName: "sjrk.dynamicViewComponentManagerTester.verifyManagedViewComponentNumbers",
@@ -63,7 +63,7 @@
                     args: ["sjrk.testDynamicViewComponent2"]
                 }, {
                     listener: "sjrk.dynamicViewComponentManagerTester.verifyManagedViewComponentType",
-                    event: "{dynamicViewComponentManager}.componentRegistry.events.viewComponentRegisteredWithManager",
+                    event: "{dynamicViewComponentManager}.componentRegistry.events.componentRegisteredWithManager",
                     args: ["{dynamicViewComponentManager}", "{arguments}.0", "sjrk.testDynamicViewComponent2"]
                 }, {
                     funcName: "sjrk.dynamicViewComponentManagerTester.verifyManagedViewComponentNumbers",
@@ -73,7 +73,7 @@
                     args: ["{dynamicViewComponentManager}"]
                 }, {
                     listener: "sjrk.dynamicViewComponentManagerTester.verifyManagedViewComponentNumbers",
-                    event: "{dynamicViewComponentManager}.componentRegistry.events.viewComponentDeregisteredWithManager",
+                    event: "{dynamicViewComponentManager}.componentRegistry.events.componentDeregistered",
                     args: ["{dynamicViewComponentManager}", 1]
                 }]
             }]

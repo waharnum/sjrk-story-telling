@@ -13,8 +13,8 @@
             }
         },
         events: {
-            viewComponentRegisteredWithManager: null,
-            viewComponentDeregisteredWithManager: null
+            componentRegisteredWithManager: null,
+            componentDeregistered: null
         }
     });
 
@@ -24,7 +24,7 @@
      * - "managedComponent": the new view component to register
      * - "completionEvent": the event to be fired upon successful completion
      */
-    sjrk.dynamicViewComponentManager.componentRegistry.registerManagedViewComponent = function (componentRegistry, managedComponent, completionEvent) {
+    sjrk.dynamicViewComponentManager.componentRegistry.registerComponent = function (componentRegistry, managedComponent, completionEvent) {
         var componentContainerIndividualClass = managedComponent.options.managedViewComponentRequiredConfig.containerIndividualClass;
 
         componentRegistry.registeredComponents[componentContainerIndividualClass] = managedComponent;
@@ -38,7 +38,7 @@
      * - "managedComponentIndividualClass": the CSS control class of the view component
      * - "completionEvent": the event to be fired upon successful completion
      */
-    sjrk.dynamicViewComponentManager.componentRegistry.deregisterManagedViewComponent = function (componentRegistry, managedComponentIndividualClass, completionEvent) {
+    sjrk.dynamicViewComponentManager.componentRegistry.deregisterComponent = function (componentRegistry, managedComponentIndividualClass, completionEvent) {
 
         fluid.remove_if(componentRegistry.registeredComponents, function (component, key) {
             return key === managedComponentIndividualClass;
@@ -103,14 +103,14 @@
                 options: {
                     listeners: {
                         "{dynamicViewComponentManager}.events.viewComponentCreated": {
-                            func: "sjrk.dynamicViewComponentManager.componentRegistry.registerManagedViewComponent",
-                            args: ["{that}", "{arguments}.0", "{dynamicViewComponentManager}.componentRegistry.events.viewComponentRegisteredWithManager"],
-                            namespace: "registerManagedViewComponent"
+                            func: "sjrk.dynamicViewComponentManager.componentRegistry.registerComponent",
+                            args: ["{that}", "{arguments}.0", "{dynamicViewComponentManager}.componentRegistry.events.componentRegisteredWithManager"],
+                            namespace: "registerComponent"
                         },
                         "{dynamicViewComponentManager}.events.viewComponentContainerRemoved": {
-                            func: "sjrk.dynamicViewComponentManager.componentRegistry.deregisterManagedViewComponent",
-                            args: ["{that}", "{arguments}.0", "{dynamicViewComponentManager}.componentRegistry.events.viewComponentDeregisteredWithManager"],
-                            namespace: "deregisterManagedViewComponent"
+                            func: "sjrk.dynamicViewComponentManager.componentRegistry.deregisterComponent",
+                            args: ["{that}", "{arguments}.0", "{dynamicViewComponentManager}.componentRegistry.events.componentDeregistered"],
+                            namespace: "deregisterComponent"
                         }
                     }
                 }
