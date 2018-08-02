@@ -21,10 +21,17 @@
             viewComponentContainerRemoved: null,
             viewComponentDeregisteredWithManager: null
         },
-        members: {
+        components: {
             managedViewComponentRegistry: {
-                // key: component individual class
-                // value: direct reference to the component
+                type: "fluid.component",
+                options: {
+                    members: {
+                        registry: {
+                            // key: component individual class
+                            // value: direct reference to the component
+                        }
+                    }
+                }
             }
         },
         dynamicComponents: {
@@ -67,7 +74,7 @@
             },
             "viewComponentCreated.registerManagedViewComponent": {
                 func: "sjrk.dynamicViewComponentManager.registerManagedViewComponent",
-                args: ["{that}", "{arguments}.0", "{dynamicViewComponentManager}.events.viewComponentRegisteredWithManager"]
+                args: ["{that}.managedViewComponentRegistry", "{arguments}.0", "{dynamicViewComponentManager}.events.viewComponentRegisteredWithManager"]
             },
             "viewComponentDestroyed.removeComponentContainer": {
                 "funcName": "sjrk.dynamicViewComponentManager.removeComponentContainer",
@@ -75,34 +82,34 @@
             },
             "viewComponentContainerRemoved.deregisterManagedViewComponent": {
                 func: "sjrk.dynamicViewComponentManager.deregisterManagedViewComponent",
-                args: ["{that}", "{arguments}.0", "{dynamicViewComponentManager}.events.viewComponentDeregisteredWithManager"]
+                args: ["{that}.managedViewComponentRegistry", "{arguments}.0", "{dynamicViewComponentManager}.events.viewComponentDeregisteredWithManager"]
             }
         }
     });
 
     /* Registers a new view component with the dynamicViewComponentManager and
      * fires a given event upon successful completion
-     * - "that": the dynamicViewComponentManager itself
+     * - "managedViewComponentRegistry": the managedViewComponentRegistry subcomponent
      * - "managedComponent": the new view component to register
      * - "completionEvent": the event to be fired upon successful completion
      */
-    sjrk.dynamicViewComponentManager.registerManagedViewComponent = function (that, managedComponent, completionEvent) {
+    sjrk.dynamicViewComponentManager.registerManagedViewComponent = function (managedViewComponentRegistry, managedComponent, completionEvent) {
         var componentContainerIndividualClass = managedComponent.options.managedViewComponentRequiredConfig.containerIndividualClass;
 
-        that.managedViewComponentRegistry[componentContainerIndividualClass] = managedComponent;
+        managedViewComponentRegistry.registry[componentContainerIndividualClass] = managedComponent;
 
         completionEvent.fire(componentContainerIndividualClass);
     };
 
     /* De-registers a view component, specified by its CSS control selector, from the
      * dynamicViewComponentManager's managed view component registry
-     * - "that": the dynamicViewComponentManager itself
+     * - "managedViewComponentRegistry": the managedViewComponentRegistry subcomponent
      * - "managedComponentIndividualClass": the CSS control class of the view component
      * - "completionEvent": the event to be fired upon successful completion
      */
-    sjrk.dynamicViewComponentManager.deregisterManagedViewComponent = function (that, managedComponentIndividualClass, completionEvent) {
-        var managedViewComponentRegistry = that.managedViewComponentRegistry;
-        fluid.remove_if(managedViewComponentRegistry, function (component, key) {
+    sjrk.dynamicViewComponentManager.deregisterManagedViewComponent = function (managedViewComponentRegistry, managedComponentIndividualClass, completionEvent) {
+
+        fluid.remove_if(managedViewComponentRegistry.registry, function (component, key) {
             return key === managedComponentIndividualClass;
         });
 

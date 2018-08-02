@@ -85,14 +85,14 @@
     };
 
     sjrk.dynamicViewComponentManagerTester.verifyManagedViewComponentType = function (that, componentContainerIndividualClass, expectedType) {
-        var actualType = that.managedViewComponentRegistry[componentContainerIndividualClass].options.managedViewComponentRequiredConfig.type;
+        var actualType = that.managedViewComponentRegistry.registry[componentContainerIndividualClass].options.managedViewComponentRequiredConfig.type;
         jqUnit.assertEquals("managedViewComponent element has the expected type of " + expectedType, expectedType, actualType);
     };
 
     sjrk.dynamicViewComponentManagerTester.verifyManagedViewComponentNumbers = function (that, expectedNumber) {
-        var registerAsArray = fluid.hashToArray(that.managedViewComponentRegistry, "componentContainerIndividualClass");
+        var registerAsArray = fluid.hashToArray(that.managedViewComponentRegistry.registry, "componentContainerIndividualClass");
 
-        jqUnit.assertEquals("managedViewComponentRegistry length is " + expectedNumber, expectedNumber, registerAsArray.length);
+        jqUnit.assertEquals("managedViewComponentRegistry.registry length is " + expectedNumber, expectedNumber, registerAsArray.length);
 
         var managedViewComponents = that.locate("managedViewComponents");
 
@@ -101,7 +101,7 @@
 
     // Destroy the first managed component
     sjrk.dynamicViewComponentManagerTester.destroyFirstManagedComponent = function (that) {
-        var managedComponentRegistryAsArray = fluid.hashToArray(that.managedViewComponentRegistry, "managedComponentKey");
+        var managedComponentRegistryAsArray = fluid.hashToArray(that.managedViewComponentRegistry.registry, "managedComponentKey");
 
         managedComponentRegistryAsArray[0].destroy();
     };
